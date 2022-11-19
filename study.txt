@@ -1,0 +1,67 @@
+todo
+- instaclone backend 동작 확인해보기
+- login 동작 확인해보기
+- front graphql setting 하기 -> 완료 (11/19)
+
+[react router v6]
+- createBrowserRouter
+DOM history API를 사용해서 history stack을 관리.
+기존에는 browerRouter를 사용했음.
+loader, actions, fetchers 같은 기능 사용 가능.
+errorComponent 
+
+- useParams
+- useSearchParams
+- Outlet
+- useOutletContext
+
+[styled-components]
+- themeProvider
+context API를 이용해서 theme 전달.
+useTheme를 이용해서 react component 에서도 값을 읽어올 수 있음.
+typescript의 경우 styled.d.ts로 우선 타입 정의하고 theme 전달하기.
+npm i @types/styled-components
+
+[react-helmet-async]
+react-helmet은 meta태그 설정-> 검색엔진 최적화에 필요.
+SPA 프로젝트에서 사용한다.
+react-helmet과 가장 큰 차이점은 HelmetProvider로 helmet의 상태를 저장하는 것.
+그냥 react-helmet은 thread-safe하지 않아서 비동기적 동작을 서버에서 하면 helmet의 상태를 매 요청마다 저장해야 했는데 이 패키지가 대신 해 줌.
+
+[react-hook-form]
+https://velog.io/@ckm960411/react-hook-form-TypeScript-%EB%A6%AC%EC%95%A1%ED%8A%B8-%ED%9B%85-%ED%8F%BC-%EC%82%AC%EC%9A%A9%EB%B2%95%EA%B3%BC-%ED%83%80%EC%9E%85-%EC%A3%BC%EA%B8%B0
+
+[front graphql setting]
+- npm i -g apollo -> console에서 apollo를 불러올수 있게 됨
+- apollo.config.js
+  module.exports = {
+    client: {
+      includes: ["./src/**/*.{tsx,ts}"], // gql태그를 찾을 파일의 위치
+      tagName: "gql", // apollo가 tsx 안의 모든 gql 태그를 찾을 수 있게 해줌.
+      service: {
+        name: "instaclone-backend",
+        url: "http://localhost:4000/graphql"
+      }
+    }
+  }
+  - apollo clinet:codegen src/__generated__ --target=typescript --outpoutFlat
+   아폴로가 백엔드로 가서 프론트의 gql 태그를 찾은 다음 generated 폴더에 쿼리 관련 인터페이스 생성.
+   생성된 인터페이스는 useQuery, useMutation의 타입으로 이용.
+
+   ---> 확인 필요!! ApolloCLI가 향후 사용 중단 계획이 올라와서 GraphQL Code Generator으로 대체해서 진행.
+  GraphQL Code Generator
+  https://the-guild.dev/graphql/codegen/docs/getting-started
+  query, mutation, subscription의 타입을 생성해줌.
+  GraphQL Code Generator도 Apollo CLI처럼 Query, Mutation, Variables등의 타입을 생성할 수 있습니다.
+
+  1. 설치
+  npm install graphql
+  npm install @graphql-codegen/cli -D
+
+  2. npx graphql-code-generator init로 설정 초기화
+  초기화가 끝나고, codegen.yml파일이 생성되면 npm i 를 실행해서 추가 플러그인들 설치
+
+  3. codegen.ts 파일 생성
+  - documents: "src/**/*.tsx", 에 위치한 파일에 gql 코드 작성
+  - graphql-codegen --config codegen.ts 실행
+  - src/gql 에 파일이 생성됨. 
