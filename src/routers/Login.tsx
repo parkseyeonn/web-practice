@@ -6,6 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useLocation } from "react-router-dom";
+import { MutationLoginArgs } from "../gql/graphql"; 
 import styled from "styled-components";
 import AuthLayout from "../components/auth/AuthLayout";
 import BottomBox from "../components/auth/BottomBox";
@@ -15,20 +16,24 @@ import FormError from "../components/auth/FormError";
 import Input from "../components/auth/Input";
 import Seperator from "../components/auth/Seperator";
 import PageTitle from "../components/PageTitle";
-
-//todo https://github.com/nomadcoders/instaclone-web/blob/master/src/screens/Login.js
+import { logUserIn } from "../apollo";
 
 interface IForm {
-  nickname: string
-  password: string
+  nickname: String
+  password: String
+  result?: String
 }
 
 const Notification = styled.div`
   color: #2ecc71;
 `;
 
+const SForm = styled.form`
+  width: 100%;
+`;
+
 const LOGIN_MUTATION = gql`
-  mutation login($nickname: String!, $password: String!){
+  mutation login($nickname: String!, $password: String!) {
     login(nickname: $nickname, password: $password) {
       ok
       token
@@ -39,11 +44,10 @@ const LOGIN_MUTATION = gql`
 
 function Login () {
   const location = useLocation();
-  console.log(location)
   const {
     register,
     handleSubmit,
-    formState: {errors},
+    formState: {errors, isValid},
     getValues,
     setError,
     clearErrors,
@@ -52,42 +56,52 @@ function Login () {
     defaultValues: {
       nickname: location?.state?.nickname || "",
       password: location?.state?.password || "",
+      result: "",
     }
   });
-  // const [login, {loading}] = useMutation(LOGIN_MUTATION, {
-  //   onCompleted
-  // });
-  // const onCompleted = data => {
-    // console.log(data);
-    // //todo onCompleted
-    // const {
-    //   login: {ok, error, token}
-    // } = data;
-    // if (!ok) {
-    //   return setError("result", {
-    //     message: error
-    //   });
-    // }
-  // };
-  //todo useMutation
+  const onCompleted = (data: any) => {
+    const {
+      login: {ok, error, token}
+    } = data;
+    if (!ok) {
+      return setError("result", {
+        message: error
+      });
+    }
+    if(token) {
+      logUserIn(token);
+    }
+  };
+  const [login, {loading}] = useMutation<MutationLoginArgs>(LOGIN_MUTATION, {
+    onCompleted,
+  });
   const onSubmitValid: SubmitHandler<IForm> = data => {
-    console.log(data);
+    if(loading) {
+      return;
+    }
     const {nickname, password} = data;
+    login({
+      variables: { nickname, password },
+    });
+  };
+  const clearResultError = () => {
+    clearErrors("result");
   };
   return (
     <AuthLayout>
       <PageTitle title="Login"/>
       <FormBox>
         <Notification>{location?.state?.message}</Notification>
-        <form onSubmit={handleSubmit(onSubmitValid)}>
+        <SForm onSubmit={handleSubmit(onSubmitValid)}>
           <Input
             {...register("nickname", {
               required: "nickname is required",
               minLength: {
-                value: 5,
-                message: "nickname should be longer than 5 chars.",
+                value: 3,
+                message: "nickname should be longer than 3 chars.",
               },
             })}
+            onFocus={clearResultError}
             type="text"
             placeholder="nickname"
             hasError={Boolean(errors?.nickname?.message)}
@@ -97,19 +111,18 @@ function Login () {
             {...register("password", {
               required: "password is required"
             })}
+            onFocus={clearResultError}
             type="password"
             placeholder="password"
             hasError={Boolean(errors?.password?.message)}
           />
           <FormError message={errors?.password?.message}/>
-          {/* todo loading */}
           <Button
             type="submit"
-            value="log in"
-            disabled={false}
-          />
+            disabled={!isValid || loading}
+          >{loading ? "Loading..." : "Log in"}</Button>
           <FormError message={errors?.result?.message}/>
-        </form>
+        </SForm>
         <Seperator />
       </FormBox>
       <BottomBox 

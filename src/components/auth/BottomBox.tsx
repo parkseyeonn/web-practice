@@ -1,10 +1,10 @@
-import {Link} from "react-router-dom";
+import {Link, Path} from "react-router-dom";
 import styled from "styled-components";
 import {BaseBox} from "../common";
 
 interface IBottomBox {
   cta: String
-  link: String
+  link: Path["pathname"]
   linkText: String
 }
 

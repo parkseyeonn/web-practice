@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { ApolloProvider } from '@apollo/client';
 import { RouterProvider } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import router from "./Router";
+import { client } from "./apollo";
 import { lightTheme } from './styles/theme';
 
 const root = ReactDOM.createRoot(
@@ -66,11 +68,13 @@ li {
 
 root.render(
   <React.StrictMode>
-    <HelmetProvider>
-      <ThemeProvider theme={lightTheme}>
-        <GlobalStyle />
-        <RouterProvider router={router}/>
-      </ThemeProvider>
-    </HelmetProvider>
+    <ApolloProvider client={client}>
+      <HelmetProvider>
+        <ThemeProvider theme={lightTheme}>
+          <GlobalStyle />
+          <RouterProvider router={router}/>
+        </ThemeProvider>
+      </HelmetProvider>
+    </ApolloProvider>
   </React.StrictMode>
 );

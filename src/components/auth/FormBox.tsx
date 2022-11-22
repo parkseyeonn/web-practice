@@ -1,12 +1,7 @@
-import { ReactNode } from "react";
 import styled from "styled-components";
 import { BaseBox } from "../common";
 
-interface IFormBox {
-  children: ReactNode
-}
-
-const Container = styled(BaseBox)`
+const FormBox = styled(BaseBox)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,11 +15,5 @@ const Container = styled(BaseBox)`
     flex-direction: column;
   }
 `;
-
-function FormBox({children}: IFormBox) {
-  return (
-    <Container>{children}</Container>
-  );
-}
 
 export default FormBox;
