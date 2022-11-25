@@ -7,11 +7,12 @@ import SignUp from "./routers/SignUp";
 import Profile from "./routers/users/Profile";
 import Followers from "./routers/users/Followers";
 import Error from "./components/Error";
+import ROUTE from "./route";
 
 // todo isLoggedIn 추가
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: ROUTE.HOME,
     element: <Root />,
     children: [
       {
@@ -20,11 +21,11 @@ const router = createBrowserRouter([
         errorElement: <Error />,
       },
       {
-        path: "/login",
+        path: ROUTE.LOGIN,
         element: <Login />,
       },
       {
-        path: "/sign-up",
+        path: ROUTE.SIGNUP,
         element: <SignUp />,
       },
       {

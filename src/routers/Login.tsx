@@ -1,3 +1,4 @@
+import {useState} from "react";
 import {gql, useMutation} from "@apollo/client";
 import {
   faFacebookSquare,
@@ -5,7 +6,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MutationLoginArgs } from "../gql/graphql"; 
 import styled from "styled-components";
 import AuthLayout from "../components/auth/AuthLayout";
@@ -16,6 +17,7 @@ import FormError from "../components/auth/FormError";
 import Input from "../components/auth/Input";
 import Seperator from "../components/auth/Seperator";
 import PageTitle from "../components/PageTitle";
+import Popup from "../components/Popup";
 import { logUserIn } from "../apollo";
 
 interface IForm {
@@ -59,10 +61,11 @@ function Login () {
       result: "",
     }
   });
+  const navigate = useNavigate();
   const onCompleted = (data: any) => {
     const {
       login: {ok, error, token}
-    } = data;
+    } = data; 
     if (!ok) {
       return setError("result", {
         message: error
@@ -70,6 +73,7 @@ function Login () {
     }
     if(token) {
       logUserIn(token);
+      navigate("/", {replace: true});
     }
   };
   const [login, {loading}] = useMutation<MutationLoginArgs>(LOGIN_MUTATION, {
@@ -87,9 +91,12 @@ function Login () {
   const clearResultError = () => {
     clearErrors("result");
   };
+  const [message, setMessage] = useState("test message");
+  const close = () => setMessage("");
   return (
     <AuthLayout>
       <PageTitle title="Login"/>
+      <Popup message={message} type="TOAST" close={close}/>
       <FormBox>
         <Notification>{location?.state?.message}</Notification>
         <SForm onSubmit={handleSubmit(onSubmitValid)}>

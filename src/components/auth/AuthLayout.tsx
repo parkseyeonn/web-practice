@@ -6,11 +6,16 @@ interface IAuthLayout {
 }
 
 const Container = styled.div`
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content:  center;
   flex-direction: column;
-  height: 100vh;
+  overflow-y: auto;
 `;
 
 const Wrapper = styled.div`
