@@ -7,7 +7,7 @@ interface IAuthLayout {
 
 const Container = styled.div`
   position: fixed;
-  top: 50px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
@@ -21,6 +21,9 @@ const Container = styled.div`
 const Wrapper = styled.div`
   max-width: 350px;
   width: 100%;
+  form {
+    width: 100%;
+  }
 `;
 
 const Footer = styled.footer`

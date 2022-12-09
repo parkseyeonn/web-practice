@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect} from "react";
 import {gql, useMutation} from "@apollo/client";
 import {
   faFacebookSquare,
@@ -17,8 +17,7 @@ import FormError from "../components/auth/FormError";
 import Input from "../components/auth/Input";
 import Seperator from "../components/auth/Seperator";
 import PageTitle from "../components/PageTitle";
-import Popup from "../components/Popup";
-import { logUserIn } from "../apollo";
+import { logUserIn, openAlert } from "../reactiveVar";
 
 interface IForm {
   nickname: String
@@ -50,7 +49,6 @@ function Login () {
     register,
     handleSubmit,
     formState: {errors, isValid},
-    getValues,
     setError,
     clearErrors,
   } = useForm<IForm>({
@@ -91,12 +89,18 @@ function Login () {
   const clearResultError = () => {
     clearErrors("result");
   };
-  const [message, setMessage] = useState("test message");
-  const close = () => setMessage("");
+
+  useEffect(() => {
+    openAlert({
+      message: "check out this",
+      cancelText: "취소",
+      submitText: "확인"
+    });
+  }, []);
+
   return (
     <AuthLayout>
       <PageTitle title="Login"/>
-      <Popup message={message} type="TOAST" close={close}/>
       <FormBox>
         <Notification>{location?.state?.message}</Notification>
         <SForm onSubmit={handleSubmit(onSubmitValid)}>

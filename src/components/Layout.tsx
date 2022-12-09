@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 const Content = styled.main`
   margin: 0 auto;
-  padding-top: 45px;
-  max-width: 930px;
+  padding: 45px 0;
+  max-width: 500px;
   width: 100%;
 `;
 

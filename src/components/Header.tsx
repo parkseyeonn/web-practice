@@ -5,8 +5,13 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import Avatar from "./Avatar";
+import useUser, {IUser} from "../hooks/useUser";
+import { logUserOut } from "../reactiveVar";
+import ROUTE from "../route";
 
 const HeaderStyle = styled.header`
+  position: relative;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,8 +25,9 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-contents: space-between;
-  max-width: 930px;
+  max-width: 500px;
   width: 100%; 
+  padding: 0 10px;
 `;
 
 const ButtonContainer = styled.div`
@@ -33,7 +39,7 @@ const ButtonLink = styled(Link)`
   margin-left: 15px;
 `;
 
-const Button = styled.span`
+const ButtonStyle = styled.span`
   padding: 4px 15px;
   border-radius: 4px;
   background-color: ${props => props.theme.accentColor};
@@ -42,12 +48,13 @@ const Button = styled.span`
 `;
 
 function Header() {
+  const user: IUser | null = useUser();
   return (
     <HeaderStyle>
       <Wrapper>
         <FontAwesomeIcon icon={faInstagram} size="2x" />
         <ButtonContainer>
-          <ButtonLink to={"/"}>
+          <ButtonLink to={ROUTE.HOME}>
             <FontAwesomeIcon icon={faHome} size="lg" />
           </ButtonLink>
           <ButtonLink to={"/"}>
@@ -56,9 +63,16 @@ function Header() {
           <ButtonLink to={"/users/1"}>
             <Avatar />
           </ButtonLink>
-          <ButtonLink to={"/login"}>
-            <Button>Login</Button>
-          </ButtonLink>
+          {
+            user ? 
+            <button onClick={logUserOut}>
+              <ButtonStyle>Logout</ButtonStyle>
+            </button> 
+            :
+            <ButtonLink to={"/login"}>
+              <ButtonStyle>Login</ButtonStyle>
+            </ButtonLink>
+          }
         </ButtonContainer>
       </Wrapper>
     </HeaderStyle>
