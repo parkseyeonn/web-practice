@@ -1,4 +1,3 @@
-import {useEffect} from "react";
 import {gql, useMutation} from "@apollo/client";
 import {
   faFacebookSquare,
@@ -17,7 +16,7 @@ import FormError from "../components/auth/FormError";
 import Input from "../components/auth/Input";
 import Seperator from "../components/auth/Seperator";
 import PageTitle from "../components/PageTitle";
-import { logUserIn, openAlert } from "../reactiveVar";
+import { logUserIn } from "../reactiveVar";
 
 interface IForm {
   nickname: String
@@ -89,14 +88,6 @@ function Login () {
   const clearResultError = () => {
     clearErrors("result");
   };
-
-  useEffect(() => {
-    openAlert({
-      message: "check out this",
-      cancelText: "취소",
-      submitText: "확인"
-    });
-  }, []);
 
   return (
     <AuthLayout>

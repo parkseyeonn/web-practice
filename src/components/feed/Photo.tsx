@@ -7,12 +7,14 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import {faHeart as SolidHeart} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 import { BoldText } from "../common";
-import Avatar from "../Avatar";
 import { Photo as PhotoTypes } from "../../gql/graphql";
 import { useToggleLikeMutation } from "../../request";
+import Avatar from "../Avatar";
+import Comments from "./Comments";
 
-type PhotoProps = Partial<PhotoTypes>;
+type Props = Partial<PhotoTypes>;
 
 function Photo ({
   id,
@@ -23,35 +25,43 @@ function Photo ({
   caption,
   commentNumber,
   comments,
-}: PhotoProps) {
-  const { toggleLike, loading } = useToggleLikeMutation({
-    variables: {id: id!},
-    update: (cache: any) => {
-      const photoId = `Photo:${id}`;
-      cache.modify({
-        id: photoId,
-        fields: {
-          isLiked(prev: boolean) {
-            return !prev;
-          },
-          likes(prev: number) {
-            return prev + (isLiked? -1 : 1);
+}: Props) {
+  const { toggleLike, loading } = useToggleLikeMutation();
+
+  const onToggleLikeClick = () => {
+    if(loading) return null;
+    toggleLike({
+      variables: {id: id!},
+      update: (cache: any) => {
+        cache.modify({
+          id: `Photo:${id}`,
+          fields: {
+            isLiked(prev: boolean) {
+              return !prev;
+            },
+            likes(prev: number) {
+              return prev + (isLiked? -1 : 1);
+            }
           }
-        }
-      })
-    }
-  });
+        });
+      }
+    });
+  };
   return (
     <PhotoContainer>
       <PhotoHeader>
-        <Avatar url={user?.avatar ? user.avatar : ''} />
-        <Nickname>{user?.nickname}</Nickname>
+        <Link to={`/users/${user?.nickname}`}>
+          <Avatar url={user?.avatar ?? ''} />
+        </Link>
+        <Link to={`/users/${user?.nickname}`}>
+          <Nickname>{user?.nickname}</Nickname>
+        </Link>
       </PhotoHeader>
       <PhotoFile src={file}/>
       <PhotoData>
         <PhotoActions>
           <div>
-            <PhotoAction onClick={() => toggleLike()}>
+            <PhotoAction onClick={onToggleLikeClick}>
               <FontAwesomeIcon 
               style={{color: isLiked ? "tomato": "inherit"}}
               icon={isLiked ? SolidHeart : faHeart} />
@@ -71,6 +81,13 @@ function Photo ({
           {likes === 1 ? "1 like" : `${likes} likes`}
         </Likes>
       </PhotoData>
+      <Comments 
+        nickname={user?.nickname!}
+        caption={caption!}
+        photoId={id!}
+        commentNumber={commentNumber!}
+        comments={comments!}
+      /> 
     </PhotoContainer>
   )
 }
@@ -115,8 +132,9 @@ const PhotoActions = styled.div`
   }
 `;
 
-const PhotoAction = styled.div`
+const PhotoAction = styled.button`
   margin-right: 10px;
+  cursor: pointer;
 `;
 
 const Likes = styled(BoldText)`

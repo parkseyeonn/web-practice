@@ -13,3 +13,17 @@ export const BoldLink = styled.span`
 export const BoldText = styled.span`
   font-weight: 600;
 `;
+
+export const AccentButton = styled.button`
+  border: none;
+  border-radius: 3px;
+  background-color: ${props => props.theme.accentColor};
+  text-align: center;
+  color: white;
+  opacity: ${props => props.disabled? "0.2" : "1"};
+  transition: .2s;
+  &:hover {
+    background-color: ${props => props.theme.accentLightColor};
+    cursor: pointer;
+  }
+`;

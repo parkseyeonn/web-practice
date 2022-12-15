@@ -59,6 +59,13 @@ button {
   cursor: pointer;
 }
 
+input {
+  padding: 0;
+  &:focus {
+    outline: none;
+  }
+}
+
 ul, ol {
   padding: 0;
 }
